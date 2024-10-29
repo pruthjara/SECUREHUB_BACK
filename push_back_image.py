@@ -1,14 +1,16 @@
 import subprocess
-import os
 import sys
+import os
 
-# Configuración para la imagen del backend
+# Configuración
 REPO_BACKEND = "strast-upm/securehub_backend"
 TAG = "latest"
 USERNAME = "pruthjara"
-TOKEN = "-"
+TOKEN = "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"
+COMPOSE_FILE_PATH = sys.argv[1] if len(sys.argv) > 1 else "docker-compose.yml"
 
 def run_command(command, error_message):
+    """Ejecuta un comando y maneja errores."""
     try:
         subprocess.run(command, shell=True, check=True)
     except subprocess.CalledProcessError as e:
@@ -16,31 +18,24 @@ def run_command(command, error_message):
         sys.exit(1)
 
 def remove_old_local_backend_image():
-    # Imágenes antiguas del backend a eliminar
+    """Elimina imágenes antiguas del backend."""
     images_to_remove = [
-        "securehub_back-backend:latest",
-        "ghcr.io/strast-upm/securehub_back-backend:latest"
+        "securehub-backend:latest",
+        "ghcr.io/strast-upm/securehub_backend:latest"
     ]
-    
     for image in images_to_remove:
         print(f"Eliminando imagen local {image}...")
-        remove_command = f"docker rmi -f {image}"
-        run_command(remove_command, f"Error al eliminar la imagen local {image}")
+        run_command(f"docker rmi -f {image}", f"Error al eliminar la imagen local {image}")
 
 def get_image_id(image_name):
-    result = subprocess.run(
-        f"docker images -q {image_name}",
-        shell=True,
-        check=True,
-        stdout=subprocess.PIPE,
-        universal_newlines=True
-    )
+    """Obtiene el ID de una imagen especificada."""
+    result = subprocess.run(f"docker images -q {image_name}", shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
     return result.stdout.strip()
 
-def main(compose_file_path):
+def main():
     # Verificar que USERNAME y TOKEN estén definidos
     if not USERNAME or not TOKEN:
-        print("Error: Las variables de entorno 'GITHUB_USERNAME' y 'GITHUB_TOKEN' deben estar definidas.")
+        print("Error: Las variables de entorno 'USERNAME' y 'TOKEN' deben estar definidas.")
         sys.exit(1)
 
     # Ejecutar sbt stage en la carpeta backend
@@ -48,42 +43,33 @@ def main(compose_file_path):
     print(f"Ejecutando 'sbt stage' en {backend_dir}...")
     run_command(f"cd {backend_dir} && sbt stage", "Error al ejecutar 'sbt stage' en la carpeta backend")
 
-    # Eliminar las imágenes locales antes de reconstruir
+    # Eliminar la imagen local del backend antes de reconstruir
     remove_old_local_backend_image()
 
-    # Construir la imagen con Docker Compose sin caché
-    print(f"Construyendo la imagen Docker del backend con Docker Compose desde {compose_file_path}...")
-    build_command = f"docker-compose -f {compose_file_path} build --no-cache"
-    run_command(build_command, "Error al construir la imagen del backend con Docker Compose")
+    # Construir todas las imágenes definidas en Docker Compose
+    print(f"Construyendo las imágenes Docker con Docker Compose desde {COMPOSE_FILE_PATH}...")
+    run_command(f"docker-compose -f {COMPOSE_FILE_PATH} build --no-cache", "Error al construir las imágenes con Docker Compose")
 
-    # Obtener el ID de la imagen recién construida
-    backend_image_id = get_image_id("securehub_back-backend")
+    # Obtener el ID de la imagen del backend
+    backend_image_id = get_image_id("securehub-backend")
 
     if not backend_image_id:
         print("Error: No se pudo encontrar la imagen del backend después de la construcción.")
         sys.exit(1)
 
-    # Etiquetar la imagen para GitHub Container Registry
+    # Etiquetar la imagen del backend para GitHub Container Registry
     print("Etiquetando la imagen del backend...")
-    tag_backend_command = f"docker tag {backend_image_id} ghcr.io/{REPO_BACKEND}:{TAG}"
-    run_command(tag_backend_command, "Error al etiquetar la imagen del backend")
+    run_command(f"docker tag {backend_image_id} ghcr.io/{REPO_BACKEND}:{TAG}", "Error al etiquetar la imagen del backend")
 
     # Autenticarse en GitHub Container Registry
     print("Autenticándose en GitHub Container Registry...")
-    login_command = f"echo {TOKEN} | docker login ghcr.io -u {USERNAME} --password-stdin"
-    run_command(login_command, "Error al autenticar en GitHub Container Registry")
+    run_command(f"echo {TOKEN} | docker login ghcr.io -u {USERNAME} --password-stdin", "Error al autenticar en GitHub Container Registry")
 
-    # Subir la imagen al registro
+    # Subir la imagen del backend al registro
     print("Subiendo la imagen del backend al registro de GitHub...")
-    push_backend_command = f"docker push ghcr.io/{REPO_BACKEND}:{TAG}"
-    run_command(push_backend_command, "Error al subir la imagen del backend al registro de GitHub")
+    run_command(f"docker push ghcr.io/{REPO_BACKEND}:{TAG}", "Error al subir la imagen del backend al registro de GitHub")
 
     print("¡Imagen del backend subida exitosamente!")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Uso: python DockerImagePushBackend.py <ruta_del_docker_compose>")
-        sys.exit(1)
-
-    compose_file_path = sys.argv[1]
-    main(compose_file_path)
+    main()
