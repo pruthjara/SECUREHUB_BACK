@@ -71,5 +71,10 @@ sbt test
 ```
 ## Despliegue en Producción
 
-El backend se puede desplegar en un clúster de Kubernetes. Asegúrate de utilizar las imágenes Docker correctas y configura las variables de entorno necesarias para la base de datos y FreeIPA.
+El backend se puede desplegar en un clúster de Kubernetes. Después de descargar el proyecto de Git, asegúrate de ejecutar el siguiente comando para generar la carpeta `target`:
+
+```bash
+sbt stage
+```
+Asegúrate de utilizar las imágenes Docker correctas y configura las variables de entorno necesarias para la base de datos y FreeIPA.
 
