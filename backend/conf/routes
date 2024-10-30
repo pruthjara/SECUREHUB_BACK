@@ -7,4 +7,5 @@
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 
-GET     /api/apod                  controllers.NasaController.getApod
+# Nueva ruta para usuarios de FreeIPA
+GET     /api/freeipa/users          controllers.FreeIPAController.getUsers
