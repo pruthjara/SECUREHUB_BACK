@@ -6,8 +6,7 @@ import os
 REPO_BACKEND = "strast-upm/securehub_backend"
 TAG = "latest"
 USERNAME = "pruthjara"
-TOKEN = "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"
-COMPOSE_FILE_PATH = sys.argv[1] if len(sys.argv) > 1 else "docker-compose.yml"
+TOKEN = "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"
 
 def run_command(command, error_message):
     """Ejecuta un comando y maneja errores."""
@@ -39,16 +38,20 @@ def main():
         sys.exit(1)
 
     # Ejecutar sbt stage en la carpeta backend
-    backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    backend_dir = os.path.join(current_dir, "backend")
     print(f"Ejecutando 'sbt stage' en {backend_dir}...")
     run_command(f"cd {backend_dir} && sbt stage", "Error al ejecutar 'sbt stage' en la carpeta backend")
 
     # Eliminar la imagen local del backend antes de reconstruir
     remove_old_local_backend_image()
 
-    # Construir todas las imágenes definidas en Docker Compose
-    print(f"Construyendo las imágenes Docker con Docker Compose desde {COMPOSE_FILE_PATH}...")
-    run_command(f"docker-compose -f {COMPOSE_FILE_PATH} build --no-cache", "Error al construir las imágenes con Docker Compose")
+    # Construir la imagen de Docker del backend
+    dockerfile_path = os.path.join(current_dir, "Dockerfile")  # Ajusta el nombre del Dockerfile si es necesario
+    print("Construyendo la imagen Docker del backend...")
+    run_command(f"docker build -t securehub-backend:latest -f {dockerfile_path} {current_dir}", "Error al construir la imagen del backend")
+
 
     # Obtener el ID de la imagen del backend
     backend_image_id = get_image_id("securehub-backend")
