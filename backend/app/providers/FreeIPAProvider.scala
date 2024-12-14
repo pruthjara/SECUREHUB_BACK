@@ -34,3 +34,16 @@ class FreeIPAProvider @Inject()(implicit ec: ExecutionContext) extends Logging {
     logger.info(s"Received response: $result") // Registra la respuesta obtenida
     Json.parse(result) // Convierte la respuesta en un objeto JSON
   }
+
+  // Método para obtener los detalles de un usuario dado un nombre de usuario
+  def getUser(username: String): Future[JsValue] = Future {
+    // Construye el payload JSON para la solicitud de detalles de usuario
+    val payload =
+      s"""{
+         |  "method": "user_show",
+         |  "params": [["$username"], {"all": true}],
+         |  "version": "2.254"
+         |}""".stripMargin
+
+    executeCurl(payload) // Ejecuta el comando curl con el payload
+  }
