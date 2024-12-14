@@ -47,3 +47,16 @@ class FreeIPAProvider @Inject()(implicit ec: ExecutionContext) extends Logging {
 
     executeCurl(payload) // Ejecuta el comando curl con el payload
   }
+
+  // Método para obtener todos los grupos disponibles
+  def getGroups: Future[JsValue] = Future {
+    // Construye el payload JSON para la solicitud de grupos
+    val payload =
+      s"""{
+         |  "method": "group_find",
+         |  "params": [[], {"all": true}],
+         |  "version": "2.254"
+         |}""".stripMargin
+
+    executeCurl(payload) // Ejecuta el comando curl con el payload
+  }
