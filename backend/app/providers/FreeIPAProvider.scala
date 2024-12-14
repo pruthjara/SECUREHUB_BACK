@@ -13,3 +13,24 @@ import scala.sys.process._
 class FreeIPAProvider @Inject()(implicit ec: ExecutionContext) extends Logging {
   // URL base para las solicitudes a FreeIPA
   private val freeIPAUrl = "https://freeipa.scrap.strast.es/ipa/session/json"
+
+  // Método privado para ejecutar un comando curl dado un payload
+  private def executeCurl(payload: String): JsValue = {
+    // Construye el comando curl como una secuencia
+    val curlCommand = Seq(
+      "curl",
+      "--negotiate", // Autenticación Kerberos
+      "-u", ":", // Usuario vacío para Kerberos
+      "-k", // Ignora errores de certificado SSL
+      "-X", "POST", // Método POST
+      "-H", "Content-Type: application/json", // Cabecera para tipo de contenido
+      "-H", s"Referer: $freeIPAUrl", // Referer para la solicitud
+      "-d", payload, // Cuerpo de la solicitud
+      freeIPAUrl // URL de destino
+    )
+
+    logger.info(s"Executing curl command: ${curlCommand.mkString(" ")}") // Registra el comando curl ejecutado
+    val result = curlCommand.!! // Ejecuta el comando y obtiene el resultado
+    logger.info(s"Received response: $result") // Registra la respuesta obtenida
+    Json.parse(result) // Convierte la respuesta en un objeto JSON
+  }
