@@ -62,3 +62,20 @@ class FreeIPAController @Inject() (
         InternalServerError(Json.obj("error" -> s"Unexpected error: ${ex.getMessage}"))
     }
   }
+// Método para validar las credenciales de inicio de sesión de un usuario
+  def login = Action.async(parse.json) { request =>
+    // Extraer el nombre de usuario y la contraseña desde el cuerpo de la solicitud JSON
+    val username = (request.body \ "username").asOpt[String].getOrElse("")
+    val password = (request.body \ "password").asOpt[String].getOrElse("")
+    
+    // Llamada al proveedor FreeIPA para validar las credenciales
+    freeIPAProvider.validateCredentials(username, password).map {
+      case true  => Ok(Json.obj("success" -> true, "message" -> "Login successful")) // Credenciales válidas
+      case false => Unauthorized(Json.obj("success" -> false, "message" -> "Invalid credentials")) // Credenciales inválidas
+    } recover {
+      // Manejo de errores en caso de excepciones
+      case ex: Throwable => InternalServerError(Json.obj("error" -> ex.getMessage))
+    }
+  }
+
+}
