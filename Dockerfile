@@ -1,15 +1,20 @@
-# Utiliza una imagen base de OpenJDK
+# Use a base image of OpenJDK
 FROM openjdk:17-jdk-slim
 
-# Establecer el directorio de trabajo
+# Install Kerberos client utilities (krb5-user) and curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        krb5-user krb5-config curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
 WORKDIR /app
 
-# Copiar el archivo de compilación y las dependencias
+# Copy the build artifacts and dependencies
 COPY ./backend/target/universal/stage ./stage
 
-# Exponer el puerto 9000 (predeterminado de Play)
+# Expose the default Play Framework port
 EXPOSE 9000
 
-# Comando para iniciar la aplicación
+# Command to start the application
 CMD ["./stage/bin/backend"]
-
