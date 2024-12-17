@@ -9,11 +9,11 @@ object SecurityConfig {
   def buildConfig(): Config = {
     val oidcConfig = new OidcConfiguration()
     oidcConfig.setClientId("securehub-frontend")
-    oidcConfig.setSecret("your-client-secret")
-    oidcConfig.setDiscoveryURI("http://keycloak-service:8080/realms/securehub/.well-known/openid-configuration")
+    oidcConfig.setSecret("z9Ufuhld7XJRgTIcPODSg6uhoRQpAkt6")
+    oidcConfig.setDiscoveryURI("http://192.168.100.3:8080/realms/securehub/.well-known/openid-configuration")
 
     val oidcClient = new OidcClient(oidcConfig)
-    val clients = new Clients("http://localhost:9000/callback", oidcClient)
+    val clients = new Clients("http://192.168.100.109:9000/callback", oidcClient)
 
     new Config(clients)
   }
