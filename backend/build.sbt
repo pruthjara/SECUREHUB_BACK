@@ -13,5 +13,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.9.4", // Play WS para realizar peticiones HTTP
   "org.asynchttpclient" % "async-http-client" % "2.12.3",
   "commons-codec" % "commons-codec" % "1.15",
-  "org.apache.httpcomponents.client5" % "httpclient5" % "5.2.1"
+  "org.apache.httpcomponents.client5" % "httpclient5" % "5.2.1",
+  "org.pac4j" %% "play-pac4j" % "12.0.0",
+  "org.pac4j" % "pac4j-oidc" % "5.7.0"
 )
