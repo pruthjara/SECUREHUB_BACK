@@ -10,10 +10,11 @@ scalaVersion := "2.13.14"
 libraryDependencies ++= Seq(
   guice,
   "com.typesafe.play" %% "play-json" % "2.9.4",
-  "com.typesafe.play" %% "play-ws" % "2.9.4", // Play WS para realizar peticiones HTTP
+  "com.typesafe.play" %% "play-ws" % "2.9.4",
   "org.asynchttpclient" % "async-http-client" % "2.12.3",
   "commons-codec" % "commons-codec" % "1.15",
   "org.apache.httpcomponents.client5" % "httpclient5" % "5.2.1",
   "org.pac4j" %% "play-pac4j" % "10.0.0",
-  "org.pac4j" % "pac4j-oidc" % "6.1.0"
+  "org.pac4j" % "pac4j-oidc" % "6.1.0",
+  "org.pac4j" % "pac4j-jwt" % "6.1.0" // Add JWT support
 )
