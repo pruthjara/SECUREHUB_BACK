@@ -1,23 +1,25 @@
 package controllers
 
-import org.pac4j.play.scala.Security
-import org.pac4j.play.store.PlaySessionStore
+import org.pac4j.play.scala.SecurityAction
 import play.api.mvc._
+import javax.inject.Inject
 import security.SecurityConfig
 
-import javax.inject.Inject
+class SecureController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-class SecureController @Inject() (cc: ControllerComponents, sessionStore: PlaySessionStore)
-  extends AbstractController(cc) {
+  // Crea una instancia de SecurityAction
+  private val securityAction = new SecurityAction[play.api.mvc.AnyContent](
+    clients = SecurityConfig.buildClients()
+  )
 
-  // Middleware para proteger rutas con pac4j
-  val securedAction = new Security[PlaySessionStore](SecurityConfig.buildClients(), sessionStore)
-
-  def secureEndpoint = securedAction { request =>
+  // Endpoint protegido
+  def secureEndpoint: Action[AnyContent] = securityAction { request =>
     Ok("¡Acceso autorizado! Has iniciado sesión correctamente.")
   }
 
-  def publicEndpoint = Action {
+  // Endpoint público
+  def publicEndpoint: Action[AnyContent] = Action {
     Ok("Este endpoint es público.")
   }
 }
+
