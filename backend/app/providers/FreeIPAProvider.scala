@@ -73,32 +73,4 @@ class FreeIPAProvider @Inject()(implicit ec: ExecutionContext) extends Logging {
 
     executeCurl(payload) // Ejecuta el comando curl con el payload
   }
-
-  // Método para validar las credenciales de un usuario
-  def validateCredentials(username: String, password: String): Future[Boolean] = Future {
-    // Construye el payload JSON para la validación de credenciales
-    val payload =
-      s"""{
-         |  "method": "auth_login",
-         |  "params": [["$username", "$password"]],
-         |  "version": "2.254"
-         |}""".stripMargin
-
-    // Construye el comando curl para validar las credenciales
-    val curlCommand = Seq(
-      "curl",
-      "-k", // Ignora errores de certificado SSL
-      "-X", "POST", // Método POST
-      "-H", "Content-Type: application/json", // Cabecera para tipo de contenido
-      "-H", s"Referer: $freeIPAUrl", // Referer para la solicitud
-      "-d", payload, // Cuerpo de la solicitud
-      freeIPAUrl // URL de destino
-    )
-
-    val response = curlCommand.!! // Ejecuta el comando y obtiene la respuesta
-
-    val jsonResponse = Json.parse(response) // Convierte la respuesta en un objeto JSON
-    (jsonResponse \ "result" \ "success").asOpt[Boolean].getOrElse(false) // Devuelve true si las credenciales son válidas
-  }
-
 }
