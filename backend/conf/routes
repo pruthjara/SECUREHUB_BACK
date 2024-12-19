@@ -13,5 +13,4 @@ GET     /freeipa/groups             controllers.FreeIPAController.getGroups
 GET     /freeipa/allusers           controllers.FreeIPAController.getAllUsers
 POST    /login                      controllers.FreeIPAController.login
 
-GET     /api/secure                 controllers.SecureController.secureEndpoint
 
