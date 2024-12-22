@@ -11,6 +11,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /freeipa/user/:username     controllers.FreeIPAController.getUser(username: String)
 GET     /freeipa/groups             controllers.FreeIPAController.getGroups
 GET     /freeipa/allusers           controllers.FreeIPAController.getAllUsers
-POST    /login                      controllers.FreeIPAController.login
-
 

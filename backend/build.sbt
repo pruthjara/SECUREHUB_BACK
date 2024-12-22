@@ -13,9 +13,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.9.4",
   "org.asynchttpclient" % "async-http-client" % "2.12.3",
   "commons-codec" % "commons-codec" % "1.15",
-  "org.apache.httpcomponents.client5" % "httpclient5" % "5.2.1",
-  "org.keycloak" % "keycloak-adapter-core" % "21.0.0"
+  "org.apache.httpcomponents.client5" % "httpclient5" % "5.2.1"
 )
+
+
 
 resolvers += Resolver.mavenCentral
 
