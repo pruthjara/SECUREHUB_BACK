@@ -12,7 +12,7 @@ import scala.sys.process._
 @Singleton
 class FreeIPAProvider @Inject()(implicit ec: ExecutionContext) extends Logging {
   // URL base para las solicitudes a FreeIPA
-  private val freeIPAUrl = "https://freeipa.scrap.strast.es/ipa/session/json"
+  private val freeIPAUrl = "https://freeipa.andion.eu/ipa/session/json"
 
   // Método privado para ejecutar un comando curl dado un payload
   private def executeCurl(payload: String): JsValue = {
