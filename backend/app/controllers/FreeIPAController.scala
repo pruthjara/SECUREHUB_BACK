@@ -31,6 +31,21 @@ class FreeIPAController @Inject() (
         InternalServerError(Json.obj("error" -> s"Unexpected error: ${ex.getMessage}"))
     }
   }
+  
+    // Método para obtener los detalles de un grupo dado un nombre de grupo
+  def getGroup(groupname: String) = Action.async {
+    // Llamada al proveedor FreeIPA para obtener los datos del grupo
+    freeIPAProvider.getGroup(groupname).map { responseJson =>
+      // Extraer la información del grupo desde la respuesta JSON
+      val groupJson = (responseJson \ "result" \ "result").asOpt[JsValue].getOrElse(Json.obj())
+
+      Ok(groupJson) // Devuelve el JSON completo del grupo como respuesta
+    } recover {
+      // Manejo de errores en caso de excepciones
+      case ex: Throwable =>
+        InternalServerError(Json.obj("error" -> s"Unexpected error: ${ex.getMessage}"))
+    }
+  }
 
   
   // Método para obtener todos los grupos disponibles en FreeIPA
