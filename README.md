@@ -1,29 +1,36 @@
 # SecureHub_Back Repository
 
-Este repositorio contiene los archivos necesarios para el despliegue del **backend** de la aplicación SecureHub en un entorno Docker y Kubernetes.
+Este repositorio contiene los archivos necesarios para el despliegue del **backend** de la aplicación SecureHub en entornos Docker y Kubernetes.
 
 ## Estructura de Archivos
 
 - **backend/**  
-  Carpeta que contiene el código fuente del backend de SecureHub.
+  Carpeta que contiene el código fuente del backend de SecureHub, desarrollado en Scala utilizando Play Framework.
 
 - **.gitignore**  
-  Archivo de configuración que especifica qué archivos y carpetas deben ser ignorados por Git, evitando que archivos temporales o de configuración local sean subidos al repositorio.
+  Especifica los archivos y carpetas que deben ser ignorados por Git, como archivos temporales o configuraciones locales.
 
 - **Dockerfile**  
-  Archivo Docker que define la configuración para construir la imagen del backend de SecureHub. Está configurado para ejecutar `sbt stage`, preparando la aplicación para el entorno de producción en Docker.
+  Define la configuración para construir la imagen Docker del backend. Ejecuta `sbt stage` para preparar la aplicación para su ejecución en producción.
 
-- **deploy_backend.sh**  
-  Script de despliegue para el backend, que automatiza el proceso de construcción, etiquetado y push de la imagen del backend a un registro de contenedores.
+- **push_back_image.py**  
+  Script en Python que automatiza la construcción y subida de la imagen Docker del backend a un registro de contenedores.
 
-- **docker-compose-backend.yaml**  
-  Archivo de configuración de Docker Compose para el backend, que permite construir y ejecutar el contenedor del backend de SecureHub de forma aislada o como parte de una red de servicios.
+- **LICENSE**  
+  Archivo que contiene la licencia del proyecto.
+
+- **README.md**  
+  Este documento con información sobre el despliegue del backend de SecureHub.
 
 ## Instrucciones para el Despliegue del Backend
 
-1. **Construcción de la Imagen Docker**: Utiliza el archivo `Dockerfile` para construir la imagen del backend. Este Dockerfile está configurado para ejecutar `sbt stage`, optimizando la aplicación para producción en Docker.
-2. **Despliegue con Docker Compose**:
-   - Usa `docker-compose-backend.yaml` para construir y ejecutar el contenedor del backend. Este archivo de configuración facilita la administración de redes y variables de entorno necesarias para el backend.
-3. **Script de Despliegue del Backend**: Ejecuta `deploy_backend.sh` para automatizar el proceso de construcción y despliegue de la imagen en un registro de contenedores.
+1. **Construcción de la Imagen Docker**  
+   Utiliza el `Dockerfile` para construir la imagen del backend. Este archivo está preparado para compilar y optimizar la aplicación con `sbt stage`.
 
-Este repositorio está diseñado para proporcionar una estructura modular, permitiendo el despliegue del backend de SecureHub en entornos Docker y Kubernetes, con configuraciones claras y listas para producción.
+2. **Automatizar la Construcción y Subida de la Imagen**  
+   Ejecuta el script `push_back_image.py` para construir y subir automáticamente la imagen del backend a tu registro de contenedores.
+
+---
+
+Este repositorio está diseñado con una estructura modular y orientada a producción, facilitando el despliegue del backend de SecureHub en entornos Dockerizados y orquestados con Kubernetes.
+
